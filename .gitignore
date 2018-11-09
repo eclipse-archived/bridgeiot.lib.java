@@ -1,0 +1,16 @@
+# General
+bin/
+build/
+doc/
+.classpath
+
+# Gradle
+.gradle/
+
+# Eclipse IDE
+.settings/
+.project
+
+# Intellij
+.idea/
+*.iml
