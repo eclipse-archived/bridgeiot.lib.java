@@ -1,16 +1,22 @@
-# General
-bin/
-build/
-doc/
 .classpath
-
-# Gradle
 .gradle/
-
-# Eclipse IDE
 .settings/
 .project
-
-# Intellij
-.idea/
+.gitignore
 *.iml
+.idea/
+bin/
+build/
+*/build/
+*/accounting/
+*/www/
+*/build/libs/
+*/bin/
+*/jboss*/
+/jboss.server.log.dir_IS_UNDEFINED/
+*/jboss.server.log.dir_IS_UNDEFINED/
+doc/
+calibri.ttf
+/build
+*/.DS_Store
+

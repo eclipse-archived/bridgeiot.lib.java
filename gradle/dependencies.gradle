@@ -1,0 +1,117 @@
+/**
+ * Copyright (c) 2016-2017 in alphabetical order:
+ * Bosch Software Innovations GmbH, Robert Bosch GmbH, Siemens AG
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *    Denis Kramer     (Bosch Software Innovations GmbH)
+ *    Stefan Schmid    (Robert Bosch GmbH)
+ *    Andreas Ziller   (Siemens AG)
+ */
+apply plugin: 'maven-publish'
+
+buildscript {
+  apply from: 'gradle/modules.gradle'
+  repositories {
+    maven {
+      url plugin_repo_url
+      credentials {
+        username = plugin_repo_username
+        password = plugin_repo_password
+      }
+    }
+    maven {
+      url plugin_repo_additional_url
+      credentials {
+        username = plugin_repo_additional_username
+        password = plugin_repo_additional_password
+      }
+    }
+  } 
+  dependencies {
+    classpath(libraries.license_plugin)
+  }
+}
+
+def dependenciesArtifactName = "bridgeiot-lib-dependencies"
+def distributionsDir = "distributions"
+def dependenciesDir = "dependencies"
+
+task collectSubmoduleDependencies(type: Copy) {
+    description= 'Collects dependencies of subprojects'
+    group = "bridgeiot"
+    from subprojects.collect { it.configurations.runtime }
+    //from buildscript.configurations.classpath
+    exclude('**/*bridgeiot-lib-*.jar')
+    into "$buildDir/${dependenciesDir}"
+}
+
+task createDependencyArchive(type: Zip) {
+    description= 'Creates an archive that includes all submoduls dependencies'
+    group = "bridgeiot"
+    from "$buildDir/${dependenciesDir}"
+    include '*'
+    archiveName "${dependenciesArtifactName}-${version}.zip"
+    destinationDir(file("$buildDir/${distributionsDir}/"))
+}
+
+task uploadDependencyArchiveLocal(type: Upload, dependsOn: build) {
+    description= 'Uploads the dependency archive to the local maven repository.'
+    group = "bridgeiot"
+    configuration = configurations.archives
+    repositories {
+        mavenDeployer {
+            repository(url: mavenLocal().url)
+            addFilter('zip') {artifact, file -> 
+                artifact.ext == 'zip'
+            }
+        }
+    }
+}
+
+task createVersionFile(dependsOn: processResources) {
+  doLast {
+    new File( "$buildDir/version.properties").withWriter { fwriter ->
+        Properties v = new Properties()
+        v['version'] = project.version.toString()
+        v.store fwriter, null
+    }
+  }
+}
+
+artifacts {
+    archives(file("$buildDir/${distributionsDir}/${dependenciesArtifactName}-${version}.zip")) {
+        name dependenciesArtifactName
+        type 'zip'
+        builtBy createDependencyArchive
+    }   
+}
+
+publishing {
+    repositories {
+        maven {
+            name 'Release'
+            url publish_release_repo_url
+            credentials {
+                username publish_release_repo_username
+                password publish_release_repo_password
+            }
+        }
+    }
+    publications {
+        BridgeIotDependencies(MavenPublication) {
+            artifactId dependenciesArtifactName
+            artifact createDependencyArchive
+        }
+    }
+}
+
+createDependencyArchive.dependsOn collectSubmoduleDependencies
+createDependencyArchive.dependsOn createVersionFile
+install.dependsOn createDependencyArchive
+uploadDependencyArchiveLocal.dependsOn createDependencyArchive

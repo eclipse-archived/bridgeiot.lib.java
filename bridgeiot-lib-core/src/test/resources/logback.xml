@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+   <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+      <!-- reset all previous level configurations of all j.u.l. loggers -->
+      <resetJUL>true</resetJUL>
+   </contextListener>
+
+   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder>
+         <Pattern>%d{HH:mm:ss.SSS} %-5level %logger{64} - %msg%n
+         </Pattern>
+         <charset>utf8</charset>
+      </encoder>
+   </appender>
+
+   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+      <file>build/log/test.log</file>
+
+      <rollingPolicy
+         class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+         <!-- Rollover at the first day of each month. -->
+         <fileNamePattern>build/log/test-%d{yyyy-MM-dd}.log</fileNamePattern>
+               
+         <maxHistory>30</maxHistory>
+         <totalSizeCap>50MB</totalSizeCap>
+      </rollingPolicy>
+
+      <encoder>
+         <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{64} - %msg%n</pattern>
+      </encoder>
+   </appender>
+
+   <root level="INFO">
+      <appender-ref ref="CONSOLE" />
+      <appender-ref ref="FILE" />
+   </root>
+
+</configuration>
+

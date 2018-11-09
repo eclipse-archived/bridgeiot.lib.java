@@ -1,0 +1,11 @@
+{\"query\": \"query q {
+	findOfferingsByQueryId(
+		queryId: \"%%localId\")	{ 
+			offerings { 
+				id name rdfType { uri name } 
+				inputData { name rdfType { uri } } 
+				outputData { name rdfType { uri } } 
+				endpoints { uri endpointType { endpointType } accessInterfaceType { accessInterfaceType } }
+			  } 
+		}
+}\"}
