@@ -1,0 +1,14 @@
+{ "query" : "mutation m1 {
+	createOfferingQuery ( 
+		input : { 
+			consumerId: \"%%consumerId\" 
+			localId: \"%%localId\" 
+			name: \"%%name\" 
+			rdfUri: \"%%rdfUri\" 
+			licenseType: %%licenseType 
+			price: %%price
+			extent: %%region
+		}
+	) 
+	{ offeringQuery { id } } 
+}" }

@@ -1,0 +1,25 @@
+
+
+To create the keystore:
+
+keytool -genkey -keyalg RSA -alias selfsigned -keystore keystore.jks -storepass 12345678 -validity 360 -keysize 2048
+
+- using password: 12345678
+
+
+To create the certificate:
+
+keytool -export -alias selfsigned -keystore keystore.jks -rfc -file X509_certificate.cer
+
+To create a p12 Certificate file
+
+keytool -importkeystore -srckeystore keystore.jks -destkeystore bigiot-lib.p12 -srcstoretype jks -deststoretype pkcs12
+
+To create a pem Certificate file
+
+openssl pkcs12 -in foo.p12 -out foo.pem
+
+
+See: 
+https://www.sslshopper.com/article-how-to-create-a-self-signed-certificate-using-java-keytool.html
+http://stackoverflow.com/questions/652916/converting-a-java-keystore-into-pem-format

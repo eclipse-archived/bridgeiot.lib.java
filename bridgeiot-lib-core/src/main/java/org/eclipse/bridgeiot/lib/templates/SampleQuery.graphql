@@ -1,0 +1,22 @@
+{ "query" : "mutation m1 {createOfferingQuery ( 
+	input : { 
+		consumerId: \"null\" 
+		localId: \"EXAMPLE-PARKING-OFFERING-QUERY\" 
+		name: \"Example Offering Query\" 
+		rdfUri: \"bigiot:Parking\" 
+		licenseType: OPEN_DATA_LICENSE 
+		price: { 
+			money: {
+				amount: 0.002000, 
+				currency: EUR}, 
+			accountingModel: PER_ACCESS
+			} 
+		extent: {
+			city: \"Barcelona\"
+			}  
+		} 
+	) { 
+	offeringQuery { id } 
+	} 
+	}" 
+}
